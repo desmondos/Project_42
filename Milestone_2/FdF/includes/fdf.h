@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:34:50 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/17 09:05:31 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 16:26:48 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # define HEIGHT 710.0
 # define MAX_ZOOM 100
 # define MIN_ZOOM 1.2
-# define ALTITUDE 0.1
+# define ALTITUDE_STEP 0.1
 # define ZOOM_FACTOR 1.05
 # define DEFAULT_HEIGHT_FACTOR 1.0
 # define DEFAULT_ANGLE_X 0.523599
@@ -157,14 +157,14 @@ typedef struct s_color
 	int	groundco;
 }				t_color;
 
-typedef struct s_bmap
+typedef struct s_bg_map
 {
 	void	*img;
 	char	*buffer;
 	int		bpix;
 	int		lines;
 	int		endi;
-}				t_bmap;
+}				t_bg_map;
 
 typedef struct s_set
 {
@@ -248,97 +248,146 @@ typedef struct s_fdf
 	t_key		key;
 	t_mouse		mouse;
 	t_map		map;
-	t_bmap		b_map;
+	t_bg_map	bg_map;
 }				t_fdf;
 
-void	for_map_get_dots(t_fdf *fdf);
-void	to_clean(t_fdf *fdf);
-void	bi_free(void **str);
-void	free_split(char **str);
-void	init_mat(float mat[3][3]);
-void	mapcpy(t_dot *from, t_dot *to, int length);
-void	orto_proj(t_dot *dots, t_dot *proj, int length);
-void	rotate_on_x(t_dot *dots, t_dot *proj, float angle, int length);
-void	rotate_on_y(t_dot *dots, t_dot *proj, float angle, int length);
-void	rotate_on_z(t_dot *dots, t_dot*proj, float angle, int length);
-void	import_color(int max, int min, t_dot *dot, t_color colors);
-void	initcolor(t_map *map);
-void	_init_map(t_map *map, int sum);
-void	divide_z(t_dot *dots, float divisor, int dot_nbr);
-void	is_doted(t_fdf *fdf, t_dot *dots);
-void	wireframe(t_dot *dot, t_fdf *fdf, int density, int line);
-void	wired(t_fdf *fdf, t_dot *wire);
-void	do_color(t_map *map);
-void	parsing(t_fdf *fdf, t_dot *proj);
-void	corres_screen(t_fdf *fdf, t_dot *proj);
-void	drawing(t_fdf *fdf, t_dot *proj, int fit);
-void	map_size(t_map *map);
-void	map_get_dots(t_fdf *fdf);
-void	main_init(t_fdf *fdf);
-void	moves(t_dot *dots, t_dot move, int length);
-void	scales(t_dot *dots, int scale, int length);
-void	to_isometric(t_map *map);
-void	from_top(t_map *map);
-void	to_profil(t_map *map);
-void	applynew_z(t_dot *dots, int length, float range);
-void	to_sphere(t_map *map, t_dot *dots);
-void	to_pol(t_map *map);
-void	dot_aux(t_fdf *fdf, t_dot pixel, t_dot dot, int ref);
-void	drawing_dot(t_fdf *fdf, t_dot dot, int rad);
-void	dot_to_paint(t_dot *dots, int length);
-void	set_color(char *buff, int endian, int color, int trans);
-void	set_background(t_fdf *fdf, int bg_color);
-void	tools_one(int keycode, t_fdf *fdf);
-void	tools_two(int keycode, t_fdf *fdf);
-void	tools_three(int keycode, t_fdf *fdf);
-void	angle(float *angle, float value);
-void	angle_control(int keycode, t_fdf *fdf);
-void	terminate(char *str);
-void	control_colorscheme(int keycode, t_map *map);
-void	all_hooks(t_fdf *fdf);
-void	clean_up(t_fdf *fdf);
-void	init_var(t_fdf *fdf);
-void	init_mlx(t_fdf *fdf);
-void	init_mlx_utils(t_fdf *fdf);
-void	move_all_dir(int keycode, t_fdf *fdf);
-void	free_var(t_fdf *fdf);
+	/* algo_fdf.c */
 
-int		check_init(t_fdf *fdf, int ac, char *filename);
-int		is_fdf_file(const char *filename);
-int		to_round(double value);
+void	set_paint_status(t_dot *dots, int length);
+void	create_wireframe(t_dot *dot, t_fdf *fdf, int density, int line);
+void	render_wireframe(t_fdf *fdf, t_dot *wire);
 int		is_valid_pix(t_dot pix);
-int		is_hexaco(char *line);
+int		draw_line(t_fdf *fdf, t_dot start, t_dot end);
+
+	/* clean_utils.c */
+
+void	free_double_pointer(void **str);
+void	free_str_array(char **str);
+void	clean_resources(t_fdf *fdf);
+void	clean_fdf_struct(t_fdf *fdf);
+int		check_invalid_dots(t_fdf *fdf, int index);
+
+	/* colors_utils.c */
+
+void	set_background_color(t_fdf *fdf, int bg_color);
+int		round_to_nearest(double value);
+int		interpolate_color(int start_co, int end_co, int length, int pix);
+int		convert_color(t_fdf *fdf, int color);
+
+	/* colors_utils_1.c */
+
+void	apply_color(t_map *map);
+void	assign_color(int max_h, int min_h, t_dot *dot, t_color colors);
+void	initialize_color(t_map *map);
+int		parse_hexaco(char *line);
+int		is_valid_point(char *value);
+
+	/* disp_set_utils.c */
+
+void	initialize_matrix(float matrix[3][3]);
+void	divide_z_coordinate(t_dot *dots, float divisor, int nbr_of_dots);
+void	apply_new_z(t_dot *dots, int length, float range);
+void	terminate_with_error(char *str);
+int		exit_program(t_fdf *fdf);
+
+	/* display_set.c */
+
+void	screen_coordinates(t_fdf *fdf, t_dot *projected_dots);
+void	copy_map(t_dot *from, t_dot *to, int length);
+void	transform_points(t_fdf *fdf, t_dot *proj);
+void	apply_scale(t_dot *dots, int scale, int length);
+void	apply_translation(t_dot *dots, t_dot translation, int length);
+
+	/* draw_utils.c */
+
+void	set_color(char *buff, int endian, int color, int transparency);
+void	draw_dot_aux(t_fdf *fdf, t_dot pixel, t_dot dot, int offset);
+void	draw_dot(t_fdf *fdf, t_dot dot, int radius);
+void	draw_painted_dots(t_fdf *fdf, t_dot *dots);
+int		put_pix(t_fdf *fdf, t_dot pix);
+
+	/* drawing.c & drawing_utility.c*/
+
+void	drawing(t_fdf *fdf, t_dot *proj, int fit);
+void	extract_dots(t_fdf *fdf);
+int		draw_fdf(t_fdf *fdf, int sized);
+int		import_map(t_fdf *fdf, char *filepath);
+int		import_dots(char *line, t_fdf *fdf, int line_nbr);
+
+	/* extras_utils.c */
+
+int		ft_strcmp(const char *s1, const char *s2);
+int		puterror(char *msg);
+int		is_fdf_extension(const char *filename);
 int		ft_isxdigit(int c);
 int		ft_htoi(const char *str);
-int		is_valid_dot(char *value);
-int		lim_checks(t_dot *dots, int length);
-int		draw_fdf(t_fdf *fdf, int sized);
-int		import_dots(char *line, t_fdf *fdf, int line_nbr);
-int		main(int argc, char **argv);
-int		inter_color(int start_co, int end_co, int length, int pix);
-int		dot_to_line(t_fdf *fdf, t_dot start, t_dot end);
-int		put_pix(t_fdf *fdf, t_dot pix);
-int		get_color(t_fdf *fdf, int color);
+
+	/* keys_tools.c */
+
+void	handle_tools_one(int keycode, t_fdf *fdf);
+void	handle_tools_two(int keycode, t_fdf *fdf);
+void	handle_tools_three(int keycode, t_fdf *fdf);
 int		key_press(int keycode, t_fdf *fdf);
 int		key_release(int keycode, t_fdf *fdf);
-int		exit_program(t_fdf *fdf);
-int		altitude(int keycode, t_fdf *fdf);
-int		mouse_zoom(int mousecode, int x, int y, t_fdf *fdf);
-int		ft_strcmp(const char *s1, const char *s2);
-int		is_fdf_ext(const char *filename);
-int		import_mcheck(t_fdf *fdf, char *filepath);
-int		drawing_check(t_fdf *fdf);
-int		mouse_release(int mousecode, int x, int y, t_fdf *fdf);
-int		mouse_press(int mousecode, int x, int y, t_fdf *fdf);
-int		mouse_step(int x, int y, t_fdf *fdf);
-int		mouse_drag(int x, int y, t_fdf *fdf);
-int		count_dots(t_fdf *fdf, const char *filename);
-int		puterror(char *msg);
-int		import_map(t_fdf *fdf, char *filepath);
-int		check_imp_dots(t_fdf *fdf, int index);
-int		count_sub(const char *str, char delimiter);
-t_dot	multi_mat(float mat[3][3], t_dot dot);
 
-char	*reading(int fd, t_fdf *fdf);
+	/* keys_utils.c */
+
+void	update_angle(float *angle, float value);
+void	handle_angle_control(int keycode, t_fdf *fdf);
+void	control_colorscheme(int keycode, t_map *map);
+int		handle_altitude(int keycode, t_fdf *fdf);
+
+	/* main.c */
+
+void	initialize_map(t_map *map, int sum);
+void	handle_map_alloc(t_fdf *fdf);
+int		count_substr(const char *str, char delimiter);
+int		count_dots(t_fdf *fdf, const char *filename);
+int		main(int argc, char **argv);
+
+	/* main_utils.c */
+
+void	initialize_main(t_fdf *fdf);
+void	free_variables(t_fdf *fdf);
+void	setup_hooks(t_fdf *fdf);
+int		initialize_check(t_fdf *fdf, int ac, char *filename);
+int		file_exists(const char *filename);
+
+	/* main_utils_1.c */
+
+void	initialize_mlx_utils(t_fdf *fdf);
+void	initialize_mlx(t_fdf *fdf);
+void	initialize_variables(t_fdf *fdf);
+int		check_drawing(t_fdf *fdf);
+int		import_map_check(t_fdf *fdf, char *filepath);
+
+	/* map_info.c */
+
+void	map_size(t_map *map);
+char	*read_file(int fd, t_fdf *fdf);
+int		check_limits(t_dot *dots, int length);
+
+	/* matrix_utils.c */
+
+void	ortho_projection(t_dot *dots, t_dot *proj, int length);
+void	rotate_around_x(t_dot *dots, t_dot *proj, float angle, int length);
+void	rotate_around_y(t_dot *dots, t_dot *proj, float angle, int length);
+void	rotate_around_z(t_dot *dots, t_dot*proj, float angle, int length);
+t_dot	multiply_matrix(float mat[3][3], t_dot dot);
+
+	/* mouse_utils.c */
+
+int		mouse_move(int x, int y, t_fdf *fdf);
+int		mouse_drag(int x, int y, t_fdf *fdf);
+int		mouse_press(int mousecode, int x, int y, t_fdf *fdf);
+int		mouse_release(int mousecode, int x, int y, t_fdf *fdf);
+
+	/* transformation.c */
+
+void	set_isometric_view(t_map *map);
+void	set_top_view(t_map *map);
+void	set_profil_view(t_map *map);
+void	set_sphere_view(t_map *map, t_dot *dots);
+void	set_polar(t_map *map);
 
 #endif

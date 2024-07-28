@@ -6,13 +6,15 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 08:56:31 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:26:16 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 17:05:19 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-void	angle(float *angle, float value)
+	/* Modifie l'angle en fonction de la valeur donnee */
+
+void	update_angle(float *angle, float value)
 {
 	(*angle) += value;
 	if ((*angle) < 0)
@@ -21,26 +23,30 @@ void	angle(float *angle, float value)
 		(*angle) -= 360;
 }
 
-void	angle_control(int keycode, t_fdf *fdf)
-{
-	int	ang;
+	/* Controle les angles en fonction des touches pressees */
 
-	ang = 1;
+void	handle_angle_control(int keycode, t_fdf *fdf)
+{
+	int	angle_step;
+
+	angle_step = 1;
 	if (fdf->key.leftctrl || fdf->key.rightctrl)
-		ang = 90;
+		angle_step = 90;
 	if (keycode == UP)
-		angle(&fdf->map.angle[0], -ang);
+		update_angle(&fdf->map.angle[0], -angle_step);
 	if (keycode == DOWN)
-		angle(&fdf->map.angle[0], ang);
+		update_angle(&fdf->map.angle[0], angle_step);
 	if (keycode == LEFT)
-		angle(&fdf->map.angle[1], ang);
+		update_angle(&fdf->map.angle[1], angle_step);
 	if (keycode == RIGHT)
-		angle(&fdf->map.angle[1], -ang);
+		update_angle(&fdf->map.angle[1], -angle_step);
 	if (keycode == K_Q)
-		angle(&fdf->map.angle[2], ang);
+		update_angle(&fdf->map.angle[2], angle_step);
 	if (keycode == K_W)
-		angle(&fdf->map.angle[2], -ang);
+		update_angle(&fdf->map.angle[2], -angle_step);
 }
+
+	/* Controle le schema de couleurs en fonction des touches pressees */
 
 void	control_colorscheme(int keycode, t_map *map)
 {
@@ -67,14 +73,41 @@ void	control_colorscheme(int keycode, t_map *map)
 		map->colors.botco = SUPERAZUL;
 		map->colors.groundco = VERDE;
 	}
-	do_color(map);
+	apply_color(map);
 }
 
-int	altitude(int keycode, t_fdf *fdf)
+	/* Controle l'altitude en fonction des touches pressees */
+
+int	handle_altitude(int keycode, t_fdf *fdf)
 {
 	if (keycode == K_9)
-		fdf->map.alt += ALTITUDE;
+		fdf->map.alt += ALTITUDE_STEP;
 	else if (keycode == K_7)
-		fdf->map.alt -= ALTITUDE;
+		fdf->map.alt -= ALTITUDE_STEP;
 	return (0);
+}
+
+	/* Comptes les sous-chaines dans une chaine */
+
+int	count_substr(const char *str, char delimiter)
+{
+	int	count;
+	int	in_word;
+
+	count = 0;
+	in_word = 0;
+	while (*str)
+	{
+		if (*str != delimiter && in_word == 0 && *str != '\n')
+		{
+			in_word = 1;
+			count++;
+		}
+		else if (*str == delimiter)
+		{
+			in_word = 0;
+		}
+		str++;
+	}
+	return (count);
 }

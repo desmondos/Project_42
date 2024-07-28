@@ -6,21 +6,25 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 17:18:02 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:25:58 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 16:34:21 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
+	/* Dessine le contenu de la carte */
+
 void	drawing(t_fdf *fdf, t_dot *proj, int fit)
 {
 	if (fit)
-		corres_screen(fdf, proj);
+		screen_coordinates(fdf, proj);
 	if (fdf->map.is_lines)
-		wired(fdf, proj);
+		render_wireframe(fdf, proj);
 	if (fdf->map.is_dots)
-		is_doted(fdf, proj);
+		draw_painted_dots(fdf, proj);
 }
+
+	/* Fonction principale pour dessiner le contenu de fdf */
 
 int	draw_fdf(t_fdf *fdf, int sized)
 {
@@ -30,14 +34,14 @@ int	draw_fdf(t_fdf *fdf, int sized)
 	if (proj == NULL)
 		puterror("alloc error");
 	fdf->map.render++;
-	set_background(fdf, fdf->map.colors.backco);
+	set_background_color(fdf, fdf->map.colors.backco);
 	if (fdf->map.dots != NULL)
 	{
-		mapcpy(fdf->map.dots, proj, fdf->map.length);
-		parsing(fdf, proj);
+		copy_map(fdf->map.dots, proj, fdf->map.length);
+		transform_points(fdf, proj);
 		drawing(fdf, proj, sized);
 		mlx_put_image_to_window(fdf->set.mlx, fdf->set.win,
-			fdf->b_map.img, 0, 0);
+			fdf->bg_map.img, 0, 0);
 	}
 	else
 	{
@@ -48,30 +52,21 @@ int	draw_fdf(t_fdf *fdf, int sized)
 	return (0);
 }
 
-int	import_map(t_fdf *fdf, char *filepath)
+static void	update_dot(t_fdf *fdf, int line_nbr, int index)
 {
-	int	fd;
-
-	_init_map(&fdf->map, 1);
-	fd = open(filepath, O_RDONLY);
-	if (fd < 0)
-		return (puterror("open file failed"), 1);
-	fdf->map.mem = reading(fd, fdf);
-	if (fdf->map.mem == NULL)
-		return (puterror("read file failed."), close(fd), 1);
-	else
-	{
-		map_size(&fdf->map);
-		map_get_dots(fdf);
-		do_color(&fdf->map);
-		to_pol(&fdf->map);
-		if (fdf->map.dots == NULL)
-			return (puterror("failed to generate dots"),
-				free(fdf->map.mem), fdf->map.mem = NULL, close(fd), 1);
-	}
-	close(fd);
-	return (0);
+	fdf->map.dots[index].ax[2] = ft_atoi(fdf->splits[fdf->pos]);
+	fdf->map.dots[index].ax[0] = fdf->pos - fdf->map.lim.ax[0] / 2;
+	fdf->map.dots[index].ax[1] = line_nbr - fdf->map.lim.ax[1] / 2;
+	fdf->map.dots[index].is_paint = 1;
+	fdf->map.dots[index].color = DEFAULT;
+	fdf->map.dots[index].hexa_color = parse_hexaco(fdf->splits[fdf->pos]);
+	if (fdf->map.lim.ax[2] < fdf->map.dots[index].ax[2])
+		fdf->map.lim.ax[2] = fdf->map.dots[index].ax[2];
+	if (fdf->map.min_z > fdf->map.dots[index].ax[2])
+		fdf->map.min_z = fdf->map.dots[index].ax[2];
 }
+
+	/* Importe des points a partir d'une ligne */
 
 int	import_dots(char *line, t_fdf *fdf, int line_nbr)
 {
@@ -81,28 +76,25 @@ int	import_dots(char *line, t_fdf *fdf, int line_nbr)
 		index = 0;
 	fdf->splits = ft_split(line, ' ');
 	if (!fdf->splits)
-		return (puterror("error at import dots"), 1);
+	{
+		puterror("error at import dots");
+		return (1);
+	}
 	fdf->pos = 0;
 	while (fdf->splits[fdf->pos] && fdf->splits[fdf->pos][0] != '\n')
 	{
-		check_imp_dots(fdf, index);
-		fdf->map.dots[index].ax[2] = ft_atoi(fdf->splits[fdf->pos]);
-		fdf->map.dots[index].ax[0] = fdf->pos - fdf->map.lim.ax[0] / 2;
-		fdf->map.dots[index].ax[1] = line_nbr - fdf->map.lim.ax[1] / 2;
-		fdf->map.dots[index].is_paint = 1;
-		fdf->map.dots[index].color = DEFAULT;
-		fdf->map.dots[index].hexa_color = is_hexaco(fdf->splits[fdf->pos]);
-		if (fdf->map.lim.ax[2] < fdf->map.dots[index].ax[2])
-			fdf->map.lim.ax[2] = fdf->map.dots[index].ax[2];
-		if (fdf->map.min_z > fdf->map.dots[index].ax[2])
-			fdf->map.min_z = fdf->map.dots[index].ax[2];
+		check_invalid_dots(fdf, index);
+		update_dot(fdf, line_nbr, index);
 		fdf->pos++;
 		index++;
 	}
-	return (free_split(fdf->splits), fdf->pos);
+	free_str_array(fdf->splits);
+	return (fdf->pos);
 }
 
-void	map_get_dots(t_fdf *fdf)
+	/* Extrait les points de la carte */
+
+void	extract_dots(t_fdf *fdf)
 {
 	static int	num_dots = 0;
 	static int	num_line = 0;
@@ -121,7 +113,7 @@ void	map_get_dots(t_fdf *fdf)
 			free(fdf->line);
 			fdf->line = ft_substr(fdf->last, 0, &fdf->map.mem[pos] - fdf->last);
 			if (!fdf->line)
-				for_map_get_dots(fdf);
+				handle_map_alloc(fdf);
 			fdf->last = &fdf->map.mem[pos + 1];
 			num_dots += import_dots(fdf->line, fdf, num_line++);
 			if (fdf->map.mem[pos] == '\0')

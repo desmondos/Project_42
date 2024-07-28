@@ -6,13 +6,15 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:00:36 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:17:11 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 15:30:41 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-void	do_color(t_map *map)
+	/* Applique les couleurs aux points de la carte en fonction de leur ax[2] */
+
+void	apply_color(t_map *map)
 {
 	int	pos;
 
@@ -21,13 +23,15 @@ void	do_color(t_map *map)
 	pos = 0;
 	while (pos < map->length)
 	{
-		import_color((int)map->lim.ax[2], map->min_z,
+		assign_color((int)map->lim.ax[2], map->min_z,
 			&map->dots[pos], map->colors);
 		pos++;
 	}
 }
 
-void	import_color(int max, int min, t_dot *dot, t_color colors)
+	/* Assigne une couleur a un point en fonction de sa hauteur ax[2] */
+
+void	assign_color(int max_h, int min_h, t_dot *dot, t_color colors)
 {
 	if (dot == NULL)
 		puterror("Error: dot is NULL");
@@ -38,41 +42,45 @@ void	import_color(int max, int min, t_dot *dot, t_color colors)
 		dot->color = dot->hexa_color;
 		return ;
 	}
-	if (dot->ax[2] == max)
+	if (dot->ax[2] == max_h)
 		dot->color = colors.topco;
 	else if (dot->ax[2] == 0)
 		dot->color = colors.groundco;
-	else if (dot->ax[2] == min && min != 0)
+	else if (dot->ax[2] == min_h && min_h != 0)
 		dot->color = colors.botco;
 	else if (dot->ax[2] > 0)
-		dot->color = inter_color(colors.groundco,
-				colors.topco, max, dot->ax[2]);
+		dot->color = interpolate_color(colors.groundco,
+				colors.topco, max_h, dot->ax[2]);
 	else
-		dot->color = inter_color(colors.botco, colors.groundco,
-				-min, -(min - dot->ax[2]));
+		dot->color = interpolate_color(colors.botco, colors.groundco,
+				-min_h, -(min_h - dot->ax[2]));
 }
 
-int	is_hexaco(char *line)
+	/* Verifie si une ligne contient une couleur hexa et la retourne */
+
+int	parse_hexaco(char *line)
 {
-	int		get_color;
-	char	**color;
+	int		color_value;
+	char	**color_parts;
 
 	if (ft_strchr(line, ',') != 0)
 	{
-		color = ft_split(line, ',');
-		if (!color)
+		color_parts = ft_split(line, ',');
+		if (!color_parts)
 			return (0);
-		if (color[1] != NULL)
-			get_color = ft_htoi(color[1]);
+		if (color_parts[1] != NULL)
+			color_value = ft_htoi(color_parts[1]);
 		else
-			get_color = 0;
-		bi_free((void **)color);
-		return (get_color);
+			color_value = 0;
+		free_double_pointer((void **)color_parts);
+		return (color_value);
 	}
 	return (0);
 }
 
-int	is_valid_dot(char *value)
+	/* Verifie si une string represente un point valide */
+
+int	is_valid_point(char *value)
 {
 	int	valid;
 
@@ -91,7 +99,9 @@ int	is_valid_dot(char *value)
 		return (1);
 }
 
-void	initcolor(t_map *map)
+	/* Initialise les couleurs par defaut de la carte */
+
+void	initialize_color(t_map *map)
 {
 	map->colors.backco = BLACK;
 	map->colors.botco = BOTTOM_COLOR;

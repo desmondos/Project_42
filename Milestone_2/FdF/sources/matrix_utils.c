@@ -6,13 +6,15 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 15:31:56 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:27:39 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 14:59:31 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-t_dot	multi_mat(float mat[3][3], t_dot dot)
+	/* Multiplie une matrice 3x3 par un vecteur 3D */
+
+t_dot	multiply_matrix(float mat[3][3], t_dot dot)
 {
 	int		row;
 	int		col;
@@ -34,30 +36,34 @@ t_dot	multi_mat(float mat[3][3], t_dot dot)
 	return (result);
 }
 
-void	orto_proj(t_dot *dots, t_dot *proj, int length)
+	/* Applique une projection orthographique aux points */
+
+void	ortho_projection(t_dot *dots, t_dot *proj, int length)
 {
 	int		pos;
 	float	mat_rot[3][3];
 
-	init_mat(mat_rot);
+	initialize_matrix(mat_rot);
 	mat_rot[0][0] = 1;
 	mat_rot[1][1] = 1;
 	pos = 0;
 	while (pos < length)
 	{
-		proj[pos] = multi_mat(mat_rot, dots[pos]);
+		proj[pos] = multiply_matrix(mat_rot, dots[pos]);
 		pos++;
 	}
 }
 
-void	rotate_on_x(t_dot *dots, t_dot *proj, float angle, int length)
+	/* Applique une rotation sur une axe aux points */
+
+void	rotate_around_x(t_dot *dots, t_dot *proj, float angle, int length)
 {
 	int		pos;
 	float	rad;
 	float	mat_rot[3][3];
 
 	rad = angle * M_PI / 180.0;
-	init_mat(mat_rot);
+	initialize_matrix(mat_rot);
 	mat_rot[0][0] = 1;
 	mat_rot[1][1] = cos(rad);
 	mat_rot[1][2] = -sin(rad);
@@ -66,19 +72,19 @@ void	rotate_on_x(t_dot *dots, t_dot *proj, float angle, int length)
 	pos = 0;
 	while (pos < length)
 	{
-		proj[pos] = multi_mat(mat_rot, dots[pos]);
+		proj[pos] = multiply_matrix(mat_rot, dots[pos]);
 		pos++;
 	}
 }
 
-void	rotate_on_y(t_dot *dots, t_dot *proj, float angle, int length)
+void	rotate_around_y(t_dot *dots, t_dot *proj, float angle, int length)
 {
 	int		pos;
 	float	rad;
 	float	mat_rot[3][3];
 
 	rad = angle * M_PI / 180.0;
-	init_mat(mat_rot);
+	initialize_matrix(mat_rot);
 	mat_rot[0][0] = cos(rad);
 	mat_rot[0][2] = sin(rad);
 	mat_rot[1][1] = 1;
@@ -87,19 +93,19 @@ void	rotate_on_y(t_dot *dots, t_dot *proj, float angle, int length)
 	pos = 0;
 	while (pos < length)
 	{
-		proj[pos] = multi_mat(mat_rot, dots[pos]);
+		proj[pos] = multiply_matrix(mat_rot, dots[pos]);
 		pos++;
 	}
 }
 
-void	rotate_on_z(t_dot *dots, t_dot*proj, float angle, int length)
+void	rotate_around_z(t_dot *dots, t_dot*proj, float angle, int length)
 {
 	int		pos;
 	float	rad;
 	float	mat_rot[3][3];
 
 	rad = angle * M_PI / 180.0;
-	init_mat(mat_rot);
+	initialize_matrix(mat_rot);
 	mat_rot[0][0] = cos(rad);
 	mat_rot[0][1] = -sin(rad);
 	mat_rot[1][0] = sin(rad);
@@ -108,7 +114,7 @@ void	rotate_on_z(t_dot *dots, t_dot*proj, float angle, int length)
 	pos = 0;
 	while (pos < length)
 	{
-		proj[pos] = multi_mat(mat_rot, dots[pos]);
+		proj[pos] = multiply_matrix(mat_rot, dots[pos]);
 		pos++;
 	}
 }

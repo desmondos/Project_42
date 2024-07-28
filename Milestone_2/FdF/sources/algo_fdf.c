@@ -6,13 +6,16 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:34:31 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:16:51 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 16:11:13 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-void	dot_to_paint(t_dot *dots, int length)
+	/* Determine si chaque point doit etre peint 
+	 * en fonction de sa coordonnee ax[2]. */
+
+void	set_paint_status(t_dot *dots, int length)
 {
 	int	pos;
 
@@ -26,6 +29,11 @@ void	dot_to_paint(t_dot *dots, int length)
 	}
 }
 
+	/* Verifie si un point est a l'interieur des dimensioins de la fenetre
+	 * Point invalide si x est en dehors des limites
+	 * Point invalide si y est en dehors des limites
+	 * Retourne 0 pour un point valide. */
+
 int	is_valid_pix(t_dot pix)
 {
 	if (pix.ax[0] < 0 || pix.ax[0] > WIN_WIDTH)
@@ -35,7 +43,12 @@ int	is_valid_pix(t_dot pix)
 	return (0);
 }
 
-int	dot_to_line(t_fdf *fdf, t_dot start, t_dot end)
+	/* Trace un segment entre deux points en utilisant un algo de dessin
+	 * de ligne
+	 * Ne rien faire si les deux points sont invalides
+	 * Puis, affiche le point sur la fenetre. */
+
+int	draw_line(t_fdf *fdf, t_dot start, t_dot end)
 {
 	if (is_valid_pix(start) == 1 && is_valid_pix(end) == 1)
 		return (1);
@@ -52,7 +65,7 @@ int	dot_to_line(t_fdf *fdf, t_dot start, t_dot end)
 	fdf->color.end_color = end.color;
 	while (fdf->pixels >= 0)
 	{
-		fdf->pix.color = inter_color(fdf->color.start_color,
+		fdf->pix.color = interpolate_color(fdf->color.start_color,
 				fdf->color.end_color, fdf->length, (fdf->length - fdf->pixels));
 		put_pix(fdf, fdf->pix);
 		fdf->pix.ax[0] += fdf->discr.ax[0];
@@ -62,7 +75,9 @@ int	dot_to_line(t_fdf *fdf, t_dot start, t_dot end)
 	return (0);
 }
 
-void	wireframe(t_dot *dot, t_fdf *fdf, int density, int line)
+	/* Cree une wireframe en dessinant des lignes entre les points */
+
+void	create_wireframe(t_dot *dot, t_fdf *fdf, int density, int line)
 {
 	int	pos;
 	int	end_x;
@@ -77,15 +92,17 @@ void	wireframe(t_dot *dot, t_fdf *fdf, int density, int line)
 		end_y = pos + (int)fdf->map.lim.ax[0] * density;
 		if (dot[pos].is_paint)
 		{
-			dot_to_line(fdf, dot[pos], dot[end_x]);
+			draw_line(fdf, dot[pos], dot[end_x]);
 			if (line + density < (int)fdf->map.lim.ax[1])
-				dot_to_line(fdf, dot[pos], dot[end_y]);
+				draw_line(fdf, dot[pos], dot[end_y]);
 		}
 		pos += density;
 	}
 }
 
-void	wired(t_fdf *fdf, t_dot *wire)
+	/* Gere l'affichage de la wireframe sur la fenetre */
+
+void	render_wireframe(t_fdf *fdf, t_dot *wire)
 {
 	int	pos;
 	int	density;
@@ -96,7 +113,7 @@ void	wired(t_fdf *fdf, t_dot *wire)
 	pos = 0;
 	while (pos < fdf->map.length)
 	{
-		wireframe(&wire[pos], fdf, density, (pos / fdf->map.lim.ax[0]));
+		create_wireframe(&wire[pos], fdf, density, (pos / fdf->map.lim.ax[0]));
 		pos += fdf->map.lim.ax[0] * density;
 	}
 }

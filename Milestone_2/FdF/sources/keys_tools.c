@@ -6,24 +6,28 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 17:18:02 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:26:10 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 15:25:44 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
+	/* Gere les actions a effectuer lors de la pression d'une touche */
+
 int	key_press(int keycode, t_fdf *fdf)
 {
-	angle_control(keycode, fdf);
-	tools_one(keycode, fdf);
-	tools_two(keycode, fdf);
-	tools_three(keycode, fdf);
-	altitude(keycode, fdf);
+	handle_angle_control(keycode, fdf);
+	handle_tools_one(keycode, fdf);
+	handle_tools_two(keycode, fdf);
+	handle_tools_three(keycode, fdf);
+	handle_altitude(keycode, fdf);
 	if (keycode >= K_1 && keycode == K_4)
 		control_colorscheme(keycode, &fdf->map);
 	draw_fdf(fdf, 0);
 	return (0);
 }
+
+	/* Gere les actions a effectuer lors du relachement d'une touche */
 
 int	key_release(int keycode, t_fdf *fdf)
 {
@@ -35,13 +39,15 @@ int	key_release(int keycode, t_fdf *fdf)
 	return (0);
 }
 
-void	tools_one(int keycode, t_fdf *fdf)
+	/* Gere l'ensemble d'actions basees sur les touches pressees */
+
+void	handle_tools_one(int keycode, t_fdf *fdf)
 {
 	if (keycode == ESC)
 		exit_program(fdf);
 	if (keycode == K_R)
 	{
-		from_top(&fdf->map);
+		set_top_view(&fdf->map);
 		draw_fdf(fdf, SIZED);
 	}
 	if (keycode == K_C)
@@ -51,12 +57,12 @@ void	tools_one(int keycode, t_fdf *fdf)
 	}
 	if (keycode == K_P)
 	{
-		to_profil(&fdf->map);
+		set_profil_view(&fdf->map);
 		draw_fdf(fdf, SIZED);
 	}
 }
 
-void	tools_two(int keycode, t_fdf *fdf)
+void	handle_tools_two(int keycode, t_fdf *fdf)
 {
 	if (keycode == K_D)
 		fdf->map.is_dots = !fdf->map.is_dots;
@@ -77,7 +83,7 @@ void	tools_two(int keycode, t_fdf *fdf)
 	}
 }
 
-void	tools_three(int keycode, t_fdf *fdf)
+void	handle_tools_three(int keycode, t_fdf *fdf)
 {
 	if (keycode == K_B)
 		fdf->map.brange -= 0.0001;
@@ -98,7 +104,7 @@ void	tools_three(int keycode, t_fdf *fdf)
 	}
 	if (keycode == K_I)
 	{
-		to_isometric(&fdf->map);
+		set_isometric_view(&fdf->map);
 		draw_fdf(fdf, SIZED);
 	}
 }

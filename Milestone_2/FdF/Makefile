@@ -8,7 +8,7 @@ SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/main_utils.c $(SRC_DIR)/main_utils_1.c \
 	  $(SRC_DIR)/display_set.c $(SRC_DIR)/mouse_utils.c $(SRC_DIR)/matrix_utils.c \
 	  $(SRC_DIR)/drawing.c $(SRC_DIR)/colors_utils_1.c $(SRC_DIR)/disp_set_utils.c \
 	  $(SRC_DIR)/map_info.c $(SRC_DIR)/transformation.c $(SRC_DIR)/keys_utils.c \
-	  $(SRC_DIR)/../get_next_line/get_next_line.c \
+	  $(SRC_DIR)/../get_next_line/get_next_line.c $(SRC_DIR)/drawing_utility.c \
 	  $(SRC_DIR)/../get_next_line/get_next_line_utils.c\
 
 OBJS = ${SRCS:.c=.o}

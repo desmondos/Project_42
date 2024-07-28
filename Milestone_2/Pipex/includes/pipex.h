@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 01:51:34 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/26 14:08:38 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 10:33:19 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@
 
 # endif
 
-void	ft_show_usage(int is_exit);
-void	ft_free(char **tab);
-void	exec_cmd(char *cmd, char **env);
-void	child_process(char **argv, int *parent_fd, char **env);
-void	parent_process(char **argv, int *parent_fd, char **env);
+void	show_usage_exit(int should_exit);
+void	free_str_array(char **array);
+void	execute_command(char *command, char **env);
+void	parent_process(char **argv, int *pipe_fd, char **env);
+void	child_process(char **argv, int *pipe_fd, char **env);
 
-char	*ft_gent_env(char *filename, char **env);
-char	*ft_get_path(char *cmd, char **env);
+char	*gent_env_value(char *key, char **env);
+char	*get_executable_path(char *command, char **env);
 
 int		main(int argc, char **argv, char **env);
-int		ft_access_file(char *filename, int is_writable);
-int		ft_strcmp(const char *s1, const char *s2);
+int		open_file(char *filename, int is_writable);
+int		ft_strcmp(const char *str1, const char *str2);
 
 #endif

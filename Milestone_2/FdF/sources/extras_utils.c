@@ -6,11 +6,13 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 08:56:49 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:26:04 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 14:03:15 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
+
+	/* Compare deux strings */
 
 int	ft_strcmp(const char *s1, const char *s2)
 {
@@ -22,13 +24,17 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (*(unsigned char *)s1 - *(unsigned char *)s2);
 }
 
+	/* Affiche un message d'erreur et renvoie -1 */
+
 int	puterror(char *msg)
 {
 	ft_putendl_fd(msg, 2);
 	return (-1);
 }
 
-int	is_fdf_ext(const char *filename)
+	/* Verifie si le nom de fichier q l'extension ".fdf" */
+
+int	is_fdf_extension(const char *filename)
 {
 	size_t	len;
 
@@ -38,11 +44,15 @@ int	is_fdf_ext(const char *filename)
 	return (ft_strcmp(&filename[len - 4], ".fdf") == 0);
 }
 
+	/* Verifie si un caractere est un chiffre hexadecimal */
+
 int	ft_isxdigit(int c)
 {
 	return ((c >= '0' && c <= '9')
 		|| (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 }
+
+	/* Convertit une chaine de caracteres hexa en entier */
 
 int	ft_htoi(const char *str)
 {

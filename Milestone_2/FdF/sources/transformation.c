@@ -6,13 +6,15 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/01 15:03:10 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:27:57 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 15:09:16 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-void	to_isometric(t_map *map)
+	/* Configure la vue isometrique de la carte */
+
+void	set_isometric_view(t_map *map)
 {
 	map->is_geom = 0;
 	map->brange = 0;
@@ -23,7 +25,9 @@ void	to_isometric(t_map *map)
 	map->from.ax[1] = WIN_HEIGHT / 2;
 }
 
-void	from_top(t_map *map)
+	/* Configure la vue de dessus de la carte */
+
+void	set_top_view(t_map *map)
 {
 	map->is_geom = 0;
 	map->brange = 0;
@@ -34,7 +38,9 @@ void	from_top(t_map *map)
 	map->from.ax[1] = (WIN_HEIGHT / 2);
 }
 
-void	to_profil(t_map *map)
+	/* Configure la vue de dessus de la carte */
+
+void	set_profil_view(t_map *map)
 {
 	map->is_geom = 0;
 	map->brange = 0;
@@ -45,7 +51,9 @@ void	to_profil(t_map *map)
 	map->from.ax[1] = (WIN_HEIGHT / 2);
 }
 
-void	to_sphere(t_map *map, t_dot *dots)
+	/* Trasforme les points en coordonnees spheriques */
+
+void	set_sphere_view(t_map *map, t_dot *dots)
 {
 	int	pos;
 
@@ -62,7 +70,9 @@ void	to_sphere(t_map *map, t_dot *dots)
 	}
 }
 
-void	to_pol(t_map *map)
+	/* Convertit les points en coordonnees polaires */
+
+void	set_polar(t_map *map)
 {
 	int		pos;
 	float	x_moves;

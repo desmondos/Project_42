@@ -6,17 +6,19 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/08 14:29:22 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:25:12 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 15:24:30 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-void	set_color(char *buff, int endian, int color, int trans)
+	/* Definit la couleur dans le buffer d'image */
+
+void	set_color(char *buff, int endian, int color, int transparency)
 {
 	if (endian == 1)
 	{
-		buff[0] = trans;
+		buff[0] = transparency;
 		buff[1] = (color >> 16) & 0xFF;
 		buff[2] = (color >> 8) & 0xFF;
 		buff[3] = (color) & 0xFF;
@@ -26,71 +28,79 @@ void	set_color(char *buff, int endian, int color, int trans)
 		buff[0] = (color) & 0xFF;
 		buff[1] = (color >> 8) & 0xFF;
 		buff[2] = (color >> 16) & 0xFF;
-		buff[3] = trans;
+		buff[3] = transparency;
 	}
 }
 
+	/* Place un pixel dans le buffer d'image */
+
 int	put_pix(t_fdf *fdf, t_dot pix)
 {
-	int	pixel;
+	int	pixel_pos;
 
 	if (pix.ax[0] >= WIN_WIDTH || pix.ax[1] >= WIN_HEIGHT
 		|| pix.ax[0] < 0 || pix.ax[1] < 0)
 		return (-1);
-	pixel = ((int)pix.ax[1] * fdf->b_map.lines) + ((int)pix.ax[0] * 4);
-	if (fdf->b_map.bpix != 32)
+	pixel_pos = ((int)pix.ax[1] * fdf->bg_map.lines) + ((int)pix.ax[0] * 4);
+	if (fdf->bg_map.bpix != 32)
 		pix.color = mlx_get_color_value(fdf->set.mlx, pix.color);
-	set_color(&fdf->b_map.buffer[pixel], fdf->b_map.endi, pix.color, 0);
+	set_color(&fdf->bg_map.buffer[pixel_pos], fdf->bg_map.endi, pix.color, 0);
 	return (0);
 }
 
-void	dot_aux(t_fdf *fdf, t_dot pixel, t_dot dot, int ref)
+	/* Auxiliaire pour dessiner des points autour d'un pixel */
+
+void	draw_dot_aux(t_fdf *fdf, t_dot pixel, t_dot dot, int offset)
 {
 	int	pos;
 
 	pos = dot.ax[0];
-	while (pos <= dot.ax[0] + ref)
+	while (pos <= dot.ax[0] + offset)
 	{
 		pixel.ax[0] = pos;
-		pixel.ax[1] = (int)dot.ax[1] + ref;
+		pixel.ax[1] = (int)dot.ax[1] + offset;
 		put_pix(fdf, pixel);
 		pixel.ax[0] = pos;
-		pixel.ax[1] = (int)dot.ax[1] - ref;
+		pixel.ax[1] = (int)dot.ax[1] - offset;
 		put_pix(fdf, pixel);
 		pos++;
 	}
 }
 
-void	drawing_dot(t_fdf *fdf, t_dot dot, int rad)
+	/* Dessine un point de rayon specifie */
+
+void	draw_dot(t_fdf *fdf, t_dot dot, int radius)
 {
-	int		is_raderr;
+	int		is_radius_err;
 	int		ax[2];
 	int		mod[2];
 	t_dot	pixel;
 
-	ax[0] = rad;
+	ax[0] = radius;
 	ax[1] = 0;
-	mod[0] = 1 - (rad << 1);
+	mod[0] = 1 - (radius << 1);
 	mod[1] = 0;
-	is_raderr = 0;
+	is_radius_err = 0;
 	pixel.color = dot.color;
 	while (ax[0] >= ax[1])
 	{
-		dot_aux(fdf, pixel, dot, ax[1]);
-		dot_aux(fdf, pixel, dot, ax[0]);
+		draw_dot_aux(fdf, pixel, dot, ax[1]);
+		draw_dot_aux(fdf, pixel, dot, ax[0]);
 		ax[1]++;
-		is_raderr += mod[1];
+		is_radius_err += mod[1];
 		mod[1] += 2;
-		if (((is_raderr << 1) + mod[0]) > 0)
+		if (((is_radius_err << 1) + mod[0]) > 0)
 		{
 			ax[0]--;
-			is_raderr += mod[0];
+			is_radius_err += mod[0];
 			mod[0] += 2;
 		}
 	}
 }
 
-void	is_doted(t_fdf *fdf, t_dot *dots)
+	/* Dessine des points si leur propriete is_paint est definie */
+
+void	draw_painted_dots(t_fdf *fdf, t_dot *dots)
 {
 	int	pos;
 
@@ -98,7 +108,7 @@ void	is_doted(t_fdf *fdf, t_dot *dots)
 	while (pos < fdf->map.length)
 	{
 		if (dots[pos].is_paint)
-			drawing_dot(fdf, dots[pos], 1);
+			draw_dot(fdf, dots[pos], 1);
 		pos++;
 	}
 }

@@ -6,44 +6,65 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:26:36 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/27 10:00:21 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 15:58:11 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-int	check_init(t_fdf *fdf, int ac, char *filename)
+	/* Verifie les arguments et initalise la struc fdf */
+
+int	initialize_check(t_fdf *fdf, int ac, char *filename)
 {
 	if (ac != 2)
-		return (puterror("usage: ./fdf <map.fdf or filepath>"), 1);
-	if (!is_fdf_ext(filename))
-		return (puterror("wrong or missing fdf extension"), 1);
-	if (is_fdf_file(filename) == 1)
-		return (ft_printf("No file %s\n", filename), 1);
+	{
+		puterror("usage: ./fdf <map.fdf or filepath>");
+		return (1);
+	}
+	if (!is_fdf_extension(filename))
+	{
+		puterror("wrong or missing fdf extension");
+		return (1);
+	}
+	if (file_exists(filename) == 1)
+	{
+		ft_printf("No file %s\n", filename);
+		return (1);
+	}
 	if (count_dots(fdf, filename) == 1)
-		return (puterror("Found wrong line length. Exiting."), 1);
+	{
+		puterror("Found wrong line length. Exiting.");
+		return (1);
+	}
 	return (0);
 }
 
-int	is_fdf_file(const char *filename)
+	/* Verifie si le fichier existe */
+
+int	file_exists(const char *filename)
 {
 	int	fd;
 
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
 		return (1);
+	close(fd);
 	return (0);
 }
 
-void	main_init(t_fdf *fdf)
+	/* Initialise les variables principales */
+
+void	initialize_main(t_fdf *fdf)
 {
-	init_var(fdf);
-	init_mlx(fdf);
-	init_mlx_utils(fdf);
-	free_var(fdf);
+	initialize_variables(fdf);
+	initialize_mlx(fdf);
+	initialize_mlx_utils(fdf);
+	free_variables(fdf);
 }
 
-void	free_var(t_fdf *fdf)
+	/* Libere les variables allouees dynamiquement */
+
+void	free_variables(t_fdf *fdf)
 {
 	if (fdf->map.dots)
 	{
@@ -52,7 +73,9 @@ void	free_var(t_fdf *fdf)
 	}
 }
 
-void	all_hooks(t_fdf *fdf)
+	/* Configure tous les hooks pour la gestion des evenemenst */
+
+void	setup_hooks(t_fdf *fdf)
 {
 	mlx_key_hook(fdf->set.win, key_press, fdf);
 	mlx_hook(fdf->set.win, 2, 1L << 0, key_press, fdf);

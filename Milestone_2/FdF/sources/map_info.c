@@ -6,23 +6,19 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 09:05:42 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/23 11:26:29 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 17:05:27 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
 
-char	*reading(int fd, t_fdf *fdf)
+	/* Lit le contenu d'un fichier et retourne sous forme de strings */
+
+static int	read_file_content(int fd, t_fdf *fdf)
 {
 	static int	byte_readed = READ;
 	static int	tot_bytes = READ;
 
-	fdf->buf = malloc(READ + 1);
-	if (!fdf->buf)
-		return (terminate("failed to allocate buf in reading"), NULL);
-	fdf->maps = ft_strdup("");
-	if (!fdf->maps)
-		return (free(fdf->buf), terminate("failed to alloc"), NULL);
 	byte_readed = read(fd, fdf->buf, READ);
 	while (byte_readed > 0)
 	{
@@ -30,15 +26,56 @@ char	*reading(int fd, t_fdf *fdf)
 		fdf->stash = fdf->maps;
 		fdf->maps = ft_strjoin(fdf->maps, fdf->buf);
 		if (!fdf->maps)
-			return (free(fdf->stash), free(fdf->buf), terminate("read"), NULL);
+		{
+			free(fdf->stash);
+			terminate_with_error("read");
+			return (0);
+		}
 		free(fdf->stash);
 		tot_bytes += byte_readed;
 		byte_readed = read(fd, fdf->buf, READ);
 	}
 	if (byte_readed < 0)
-		return (free(fdf->maps), free(fdf->buf), terminate("reading"), NULL);
-	return (free(fdf->buf), fdf->maps);
+	{
+		terminate_with_error("reading");
+		return (0);
+	}
+	return (1);
 }
+
+static int	allocate_buff(t_fdf *fdf)
+{
+	fdf->buf = malloc(READ + 1);
+	if (!fdf->buf)
+	{
+		terminate_with_error("failed to allocate buf");
+		return (0);
+	}
+	fdf->maps = ft_strdup("");
+	if (!fdf->maps)
+	{
+		free(fdf->buf);
+		terminate_with_error("failed to alloc");
+		return (0);
+	}
+	return (1);
+}
+
+char	*read_file(int fd, t_fdf *fdf)
+{
+	if (!allocate_buff(fdf))
+		return (NULL);
+	if (!read_file_content(fd, fdf))
+	{
+		free(fdf->buf);
+		free(fdf->maps);
+		return (NULL);
+	}
+	free(fdf->buf);
+	return (fdf->maps);
+}
+
+	/* Calcule la taille de la carte */
 
 void	map_size(t_map *map)
 {
@@ -69,7 +106,9 @@ void	map_size(t_map *map)
 	map->length = map->lim.ax[0] * map->lim.ax[1];
 }
 
-int	lim_checks(t_dot *dots, int length)
+	/* Verifie les limites des points de la carte */
+
+int	check_limits(t_dot *dots, int length)
 {
 	int	pos;
 

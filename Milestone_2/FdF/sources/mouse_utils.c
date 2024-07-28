@@ -6,11 +6,13 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 09:05:42 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/27 10:06:20 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 15:03:30 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/fdf.h"
+
+	/* Gere l'evenement de pression de la souris */
 
 int	mouse_press(int mousecode, int x, int y, t_fdf *fdf)
 {
@@ -34,7 +36,9 @@ int	mouse_press(int mousecode, int x, int y, t_fdf *fdf)
 	return (0);
 }
 
-int	mouse_step(int x, int y, t_fdf *fdf)
+	/* Gere le deplacement de la souris sans bouton presse */
+
+int	mouse_move(int x, int y, t_fdf *fdf)
 {
 	if (fdf->mouse.is_leftmouse)
 	{
@@ -49,6 +53,8 @@ int	mouse_step(int x, int y, t_fdf *fdf)
 	return (0);
 }
 
+	/* Gere le glissement de la souris avec un bouton presse */
+
 int	mouse_drag(int x, int y, t_fdf *fdf)
 {
 	if (fdf->mouse.is_leftmouse)
@@ -61,6 +67,8 @@ int	mouse_drag(int x, int y, t_fdf *fdf)
 	}
 	return (0);
 }
+
+	/* Gere le relachemenr du bouton de la souris */
 
 int	mouse_release(int mousecode, int x, int y, t_fdf *fdf)
 {

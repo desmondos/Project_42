@@ -6,66 +6,98 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 08:55:04 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/26 14:10:30 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/28 10:33:07 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-int	ft_access_file(char *filename, int is_writable)
+	/* Ouvre un fichier en mode lecture ou ecriture 
+	 * selon le parametre is_writable
+	 * et renvoie le descripteur de fichier file_descriptor 
+	 * si is_writable >= 0 et <= 1
+	 * sinon, quitte le programme. */
+
+int	open_file(char *filename, int is_writable)
 {
-	int	get;
+	int	file_descriptor;
 
 	if (is_writable == 0)
-		get = open(filename, O_RDONLY, 0777);
+		file_descriptor = open(filename, O_RDONLY, 0777);
 	if (is_writable == 1)
-		get = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		file_descriptor = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (is_writable == -1)
 		exit(0);
-	return (get);
+	return (file_descriptor);
 }
 
-void	exec_cmd(char *cmd, char **env)
-{
-	char	*path;
-	char	**scmd;
+	/* Execute une commande en utilisant l'environnement donne
+	 *	- divise la commande en arguments
+	 *	- puis, trouve le chemin complet de l'executable
+	 *	- si le chemin n'est pas trouver affiche un msg d'erreur et quitte
+	 *	- puis, execute la commande, puis libere la memoire allouee et quitte
+	 *	si execve echoue
+	 *	 */
 
-	scmd = ft_split(cmd, ' ');
-	if (!scmd)
+void	execute_command(char *command, char **env)
+{
+	char	*executable_path;
+	char	**command_part;
+
+	command_part = ft_split(command, ' ');
+	if (!command_part)
 		exit(1);
-	path = ft_get_path(scmd[0], env);
-	if (!path)
+	executable_path = get_executable_path(command_part[0], env);
+	if (!executable_path)
 	{
 		ft_putstr_fd("pipex: commamd not found ", 2);
-		ft_putendl_fd(scmd[0], 2);
-		ft_free(scmd);
+		ft_putendl_fd(command_part[0], 2);
+		free_str_array(command_part);
 		exit(0);
 	}
-	if (execve(path, scmd, env) == -1)
+	if (execve(executable_path, command_part, env) == -1)
 	{
-		ft_free(scmd);
+		free_str_array(command_part);
 		exit(1);
 	}
 }
 
-void	child_process(char **argv, int *parent_fd, char **env)
-{
-	int	fd;
+	/* Fonctionnnement du child_process:
+		*	Le processus debute par l'ouverture du fichier d'entree, ensuite
+		*	le processus enfant va lire a partir d'un fichier d'entree, puis 
+		*	executer une commande, et ecrire la sortie de cette commande dans le 
+		*	pipe.
+		*	Puis, il redirige son stdout vers l'ecriture du pipe en utilisant 
+		*	dup2(pipe_fd[1], 1), puis ferme l'extremite de lecture du pipe
+		*	pipe_fd[0]. */
 
-	fd = ft_access_file(argv[1], 0);
-	dup2(fd, 0);
-	dup2(parent_fd[1], 1);
-	close(parent_fd[0]);
-	exec_cmd(argv[2], env);
+void	child_process(char **argv, int *pipe_fd, char **env)
+{
+	int	input_fd;
+
+	input_fd = open_file(argv[1], 0);
+	dup2(input_fd, 0);
+	dup2(pipe_fd[1], 1);
+	close(pipe_fd[0]);
+	execute_command(argv[2], env);
 }
 
-void	parent_process(char **argv, int *parent_fd, char **env)
-{
-	int	fd;
+	/* Fonctionnnement du parent_process:
+		*	Le processus debute par l'ouverture du fichier de sortie, ensuite
+		*	le processus parent va lire la sortie de la commande du processus
+		*	enfant a partir du pipe, executer une deuxieme commande, et ecrire
+		*	 la sortie de cette commande dans un fichier de sortie.
+		*	 Puis, il redirige son stdin vers la lecture du pipe en utilisant
+		*	 dup2(pipe_fd[0], 0), puis ferme l'extremite d'ecriture du 
+		*	 pipe pipe_fd[1]. */
 
-	fd = ft_access_file(argv[4], 1);
-	dup2(fd, 1);
-	dup2(parent_fd[0], 0);
-	close(parent_fd[1]);
-	exec_cmd(argv[3], env);
+void	parent_process(char **argv, int *pipe_fd, char **env)
+{
+	int	input_fd;
+
+	input_fd = open_file(argv[4], 1);
+	dup2(input_fd, 1);
+	dup2(pipe_fd[0], 0);
+	close(pipe_fd[1]);
+	execute_command(argv[3], env);
 }
