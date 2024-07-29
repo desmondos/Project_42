@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 15:00:36 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/28 15:30:41 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 07:58:12 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int	is_valid_point(char *value)
 
 void	initialize_color(t_map *map)
 {
-	map->colors.backco = BLACK;
+	map->colors.backco = DARK;
 	map->colors.botco = BOTTOM_COLOR;
 	map->colors.topco = TOP_COLOR;
 	map->colors.groundco = GROUND_COLOR;

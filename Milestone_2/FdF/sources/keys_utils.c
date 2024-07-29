@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 08:56:31 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/28 17:05:19 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 08:32:30 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,41 +50,12 @@ void	handle_angle_control(int keycode, t_fdf *fdf)
 
 void	control_colorscheme(int keycode, t_map *map)
 {
-	map->colors.botco = AZUL;
-	map->colors.backco = CARBON;
-	map->colors.groundco = SAFFRON;
-	map->colors.topco = BRICK_RED;
-	if (keycode == K_2)
-	{
-		map->colors.botco = CARBON;
-		map->colors.backco = WHITE;
-		map->colors.groundco = CARBON;
-		map->colors.topco = CARBON;
-	}
-	if (keycode == K_3)
-	{
-		map->colors.topco = WHITE;
-		map->colors.botco = WHITE;
-		map->colors.groundco = WHITE;
-	}
-	if (keycode == K_4)
-	{
-		map->colors.topco = ROJO;
-		map->colors.botco = SUPERAZUL;
-		map->colors.groundco = VERDE;
-	}
+	(void)keycode;
+	map->colors.botco = BOTTOM_COLOR;
+	map->colors.backco = DARK;
+	map->colors.groundco = GROUND_COLOR;
+	map->colors.topco = TOP_COLOR;
 	apply_color(map);
-}
-
-	/* Controle l'altitude en fonction des touches pressees */
-
-int	handle_altitude(int keycode, t_fdf *fdf)
-{
-	if (keycode == K_9)
-		fdf->map.alt += ALTITUDE_STEP;
-	else if (keycode == K_7)
-		fdf->map.alt -= ALTITUDE_STEP;
-	return (0);
 }
 
 	/* Comptes les sous-chaines dans une chaine */

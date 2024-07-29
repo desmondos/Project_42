@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 09:34:50 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/28 16:26:48 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 08:48:20 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 # define FDF_H
 
 # define TITLE "FdF"
-# define SCALE 20
+//# define SCALE 20
 # define WIN_WIDTH 920.0
 # define WIDTH 950.0
 # define WIN_HEIGHT 680.0
 # define HEIGHT 710.0
-# define MAX_ZOOM 100
-# define MIN_ZOOM 1.2
+# define MAX_ZOOM 42
+# define MIN_ZOOM 4.2
 # define ALTITUDE_STEP 0.1
 # define ZOOM_FACTOR 1.05
 # define DEFAULT_HEIGHT_FACTOR 1.0
@@ -29,9 +29,9 @@
 # define TRANS_FACTOR_X 1
 # define TRANS_FACTOR_Y 1
 # define ROT 0.01
-# define BRIGHT 0.1
-# define MAX_BRIGHT 1
-# define MIN_BRIGHT 0.2
+//# define BRIGHT 0.1
+//# define MAX_BRIGHT 1
+//# define MIN_BRIGHT 0.2
 # define LONG 1
 # define LAT 0
 # define MARGIN 100
@@ -79,17 +79,6 @@
 # define K_Y 121
 # define K_Z 122
 
-# define K_0 65438
-# define K_1 65436
-# define K_2 65433
-# define K_3 65435
-# define K_4 65430
-# define K_5 65437
-# define K_6 65432
-# define K_7 65429
-# define K_8 65431
-# define K_9 65434
-
 # define LOW_COLOR 0x0000FF
 # define HIGH_COLOR 0xFF0000
 # define BLACK 0x000000
@@ -101,21 +90,8 @@
 # define BLUE 0x0000FF
 # define YELLOW 0xFFFF00
 # define BOTTOM_COLOR 0x1B8EFA
-# define TOP_COLOR 0xC2294E
-# define GROUND_COLOR 0xF3AF3D
-
-# define ROJO 		0xc1272d
-# define VERDE		0x33cc55
-# define FUCSIA 	0xff255c
-# define AZUL		0x1B8EFA
-# define SUPERAZUL	0x0000FF
-# define CARBON		0x151515
-# define WHITE		0xBBBBBB
-# define DISCO		0x9A1F6A
-# define BRICK_RED	0xC2294E
-# define FLAMINGO	0xEC4B27
-# define JAFFA		0xEF8633
-# define SAFFRON	0xF3AF3D
+# define TOP_COLOR 0xCD5C5C
+# define GROUND_COLOR 0xF4A460
 
 # include <fcntl.h>
 # include <unistd.h>

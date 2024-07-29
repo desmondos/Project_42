@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 17:18:02 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/28 15:25:44 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 08:45:40 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ int	key_press(int keycode, t_fdf *fdf)
 	handle_tools_one(keycode, fdf);
 	handle_tools_two(keycode, fdf);
 	handle_tools_three(keycode, fdf);
-	handle_altitude(keycode, fdf);
-	if (keycode >= K_1 && keycode == K_4)
-		control_colorscheme(keycode, &fdf->map);
 	draw_fdf(fdf, 0);
 	return (0);
 }
@@ -76,11 +73,6 @@ void	handle_tools_two(int keycode, t_fdf *fdf)
 		fdf->map.is_lines = !fdf->map.is_lines;
 	if (keycode == K_X)
 		fdf->map.is_suplines = !fdf->map.is_suplines;
-	if (keycode == CTRL_L || keycode == CTRL_R)
-	{
-		fdf->key.leftctrl = 1;
-		fdf->key.rightctrl = 1;
-	}
 }
 
 void	handle_tools_three(int keycode, t_fdf *fdf)
@@ -91,17 +83,11 @@ void	handle_tools_three(int keycode, t_fdf *fdf)
 		fdf->map.brange += 0.0001;
 	if (keycode == K_SUM)
 	{
-		if (fdf->key.leftctrl || fdf->key.rightctrl)
-			fdf->map.scale *= 1.1;
 		if (fdf->map.divide_z > 1)
 			fdf->map.divide_z -= 0.1;
 	}
 	if (keycode == K_MIN)
-	{
-		if (fdf->key.leftctrl || fdf->key.rightctrl)
-			fdf->map.scale /= 1.1;
 		fdf->map.divide_z += 0.1;
-	}
 	if (keycode == K_I)
 	{
 		set_isometric_view(&fdf->map);
