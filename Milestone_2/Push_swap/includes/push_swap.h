@@ -56,6 +56,7 @@ int		ft_is_dup(t_list *a, int input);
 int		main(int argc, char *argv[]);
 int		ft_is_lowest(t_list *a);
 int		calc_len(int ac, char **av);
+int		ft_mini(int a, int b);
 
 void	arg_free(char **av);
 void	main_sort(t_list *a);

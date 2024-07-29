@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 09:40:44 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/27 17:13:54 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 16:34:15 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,15 @@ void	ft_moves(t_list **a, t_list **b)
 	if (cheap == NULL || cheap->target == NULL)
 		return ;
 	if (cheap->pre_mid && cheap->target->pre_mid)
-		rot_all(a, b, cheap);
+	{
+		while (*b != cheap && *a != cheap->target)
+			ft_rr(a, b);
+	}
 	else if (!(cheap->pre_mid) && !(cheap->target->pre_mid))
-		rev_rot_all(a, b, cheap);
+	{
+		while (*b != cheap && *a != cheap->target)
+			ft_rrr(a, b);
+	}
 	ft_rot_b(b, cheap);
 	ft_rot_a(a, cheap->target);
 	ft_pa(a, b);

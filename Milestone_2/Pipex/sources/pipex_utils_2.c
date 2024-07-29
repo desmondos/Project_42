@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 08:55:04 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/28 10:33:07 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 09:53:42 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,12 @@ void	child_process(char **argv, int *pipe_fd, char **env)
 void	parent_process(char **argv, int *pipe_fd, char **env)
 {
 	int	input_fd;
+	int	status;
 
 	input_fd = open_file(argv[4], 1);
 	dup2(input_fd, 1);
 	dup2(pipe_fd[0], 0);
 	close(pipe_fd[1]);
 	execute_command(argv[3], env);
+	wait(&status);
 }

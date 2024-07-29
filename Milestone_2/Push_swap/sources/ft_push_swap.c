@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 20:29:03 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/27 17:14:09 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 16:33:16 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,18 +111,24 @@ void	ft_set_move(t_list *a, t_list *b)
 {
 	int		length_a;
 	int		length_b;
+	int		move_a;
+	int		move_b;
 
 	length_a = ft_stack_length(a);
 	length_b = ft_stack_length(b);
 	while (b)
 	{
-		b->move = b->cur_pos;
-		if (!(b->pre_mid))
-			b->move = length_b - (b->cur_pos);
-		if (b->target->pre_mid)
-			b->move += b->target->cur_pos;
-		else
-			b->move += length_a - (b->target->cur_pos);
+		move_a = b->target->cur_pos;
+		move_b = b->cur_pos;
+		if (!(b->target->pre_mid))
+			move_a = length_a - (b->target->cur_pos);
+		if (!b->pre_mid)
+			move_b = length_b - b->cur_pos;
+		b->move = move_a + move_b;
+		if (b->target->pre_mid && b->pre_mid)
+			b->move -= ft_mini(move_a, move_b);
+		else if (!b->target->pre_mid && !b->pre_mid)
+			b->move -= ft_mini(move_a, move_b);
 		b = b->next;
 	}
 }

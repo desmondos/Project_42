@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 09:15:47 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/01 16:23:22 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 16:31:09 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ void	ft_rr(t_list **a, t_list **b)
 
 void	rot_all(t_list **a, t_list **b, t_list *cheap)
 {
-	while (*a != cheap->target && *b != cheap)
+	while ((*a)->pre_mid && cheap->pre_mid)
 		ft_rr(a, b);
-	ft_setup_pos(*a);
-	ft_setup_pos(*b);
+	while (!(*a)->pre_mid && !cheap->pre_mid)
+		ft_rrr(a, b);
 }

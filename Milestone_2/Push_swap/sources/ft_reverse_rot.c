@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 09:14:11 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/01 16:23:12 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/29 15:49:36 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ void	ft_rrr(t_list **a, t_list **b)
 	ft_reverse_rotate(b);
 	write(1, "rrr\n", 4);
 }
-
+/*
 void	rev_rot_all(t_list **a, t_list **b, t_list *cheap)
 {
 	while (*a != cheap->target && *b != cheap)
 		ft_rrr(a, b);
 	ft_setup_pos(*a);
 	ft_setup_pos(*b);
-}
+}*/
