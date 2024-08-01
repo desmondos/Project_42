@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antanana      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 10:07:28 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/15 17:45:56 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/31 08:46:23 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define LIBFT_H
 
 # include <unistd.h>
-# include <stddef.h>
 # include <stdlib.h>
 
 typedef struct s_split

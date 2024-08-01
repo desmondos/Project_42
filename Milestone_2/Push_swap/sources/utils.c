@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_utils.c                                         :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 09:40:44 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/29 16:34:15 by candriam         ###   ########.mg       */
+/*   Updated: 2024/08/01 14:41:25 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
 
-long	ft_atolong(const char *nptr)
+long	str_to_long(const char *nptr)
 {
 	int		pos;
 	int		is_neg;
@@ -33,7 +33,7 @@ long	ft_atolong(const char *nptr)
 	while (nptr[pos])
 	{
 		if (!(nptr[pos] >= 48 && nptr[pos] <= 57))
-			ft_puterror();
+			return (1);
 		data = data * 10 + (nptr[pos] - 48);
 		pos++;
 	}
@@ -62,37 +62,35 @@ void	ft_rot_b(t_list **b, t_list *top)
 	}
 }
 
-t_list	*return_cheap(t_list *list)
+t_list	*get_cheapest_node(t_list *stack)
 {
-	if (list == NULL)
-		return (NULL);
-	while (list)
+	while (stack)
 	{
-		if (list->is_cheapest)
-			return (list);
-		list = list->next;
+		if (stack->is_cheapest)
+			return (stack);
+		stack = stack->next;
 	}
 	return (NULL);
 }
 
-void	ft_moves(t_list **a, t_list **b)
+void	perform_moves(t_list **a, t_list **b)
 {
-	t_list	*cheap;
+	t_list	*cheapest_node;
 
-	cheap = return_cheap(*b);
-	if (cheap == NULL || cheap->target == NULL)
+	cheapest_node = get_cheapest_node(*b);
+	if (cheapest_node == NULL || cheapest_node->target == NULL)
 		return ;
-	if (cheap->pre_mid && cheap->target->pre_mid)
+	if (cheapest_node->pre_mid && cheapest_node->target->pre_mid)
 	{
-		while (*b != cheap && *a != cheap->target)
+		while (*b != cheapest_node && *a != cheapest_node->target)
 			ft_rr(a, b);
 	}
-	else if (!(cheap->pre_mid) && !(cheap->target->pre_mid))
+	else if (!(cheapest_node->pre_mid) && !(cheapest_node->target->pre_mid))
 	{
-		while (*b != cheap && *a != cheap->target)
+		while (*b != cheapest_node && *a != cheapest_node->target)
 			ft_rrr(a, b);
 	}
-	ft_rot_b(b, cheap);
-	ft_rot_a(a, cheap->target);
+	ft_rot_b(b, cheapest_node);
+	ft_rot_a(a, cheapest_node->target);
 	ft_pa(a, b);
 }

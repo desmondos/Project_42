@@ -1,45 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_push_swap.c                                     :+:      :+:    :+:   */
+/*   push_swap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 20:29:03 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/29 16:33:16 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/31 08:21:03 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
 
-void	ft_push_swap(t_list **a, t_list **b)
+void	push_swap(t_list **a, t_list **b)
 {
-	t_list	*lowest;
+	t_list	*lowest_node;
 	int		len_a;
 
-	len_a = ft_stack_length(*a);
+	len_a = get_stack_length(*a);
 	if (len_a == 5)
-		ft_mid_sort(a, b);
+		mid_sort(a, b);
 	else
 		while (len_a-- > 3)
 			ft_pb(b, a);
-	ft_easy_sort(a);
+	easy_sort(a);
 	while (*b)
 	{
-		ft_init_nodes(*a, *b);
-		ft_moves(a, b);
+		initialize_nodes(*a, *b);
+		perform_moves(a, b);
 	}
-	ft_setup_pos(*a);
-	lowest = find_min(*a);
-	if (lowest->pre_mid)
-		while (*a != lowest)
+	setup_pos(*a);
+	lowest_node = find_min_node(*a);
+	if (lowest_node->pre_mid)
+		while (*a != lowest_node)
 			ft_ra(a);
 	else
-		while (*a != lowest)
+		while (*a != lowest_node)
 			ft_rra(a);
 }
 
-void	ft_setup_pos(t_list *stack)
+void	setup_pos(t_list *stack)
 {
 	int	pos;
 	int	middle_stack;
@@ -47,7 +47,7 @@ void	ft_setup_pos(t_list *stack)
 	if (!stack)
 		return ;
 	pos = 0;
-	middle_stack = ft_stack_length(stack) / 2;
+	middle_stack = get_stack_length(stack) / 2;
 	while (stack)
 	{
 		stack->cur_pos = pos;
@@ -60,7 +60,7 @@ void	ft_setup_pos(t_list *stack)
 	}
 }
 
-void	ft_setup_target(t_list *a, t_list *b)
+void	setup_target(t_list *a, t_list *b)
 {
 	t_list	*cur_a;
 	t_list	*target;
@@ -80,26 +80,26 @@ void	ft_setup_target(t_list *a, t_list *b)
 			cur_a = cur_a->next;
 		}
 		if (LONG_MAX == match_data)
-			b->target = find_min(a);
+			b->target = find_min_node(a);
 		else
 			b->target = target;
 		b = b->next;
 	}
 }
 
-void	ft_set_cheapest(t_list *b)
+void	id_cheapest_node(t_list *b)
 {
 	t_list	*cheapest_node;
-	long	cheapest_data;
+	long	cheapest_move_cost;
 
 	if (!b)
 		return ;
-	cheapest_data = LONG_MAX;
+	cheapest_move_cost = LONG_MAX;
 	while (b)
 	{
-		if (b->move < cheapest_data)
+		if (b->move < cheapest_move_cost)
 		{
-			cheapest_data = b->move;
+			cheapest_move_cost = b->move;
 			cheapest_node = b;
 		}
 		b = b->next;
@@ -107,15 +107,15 @@ void	ft_set_cheapest(t_list *b)
 	cheapest_node->is_cheapest = true;
 }
 
-void	ft_set_move(t_list *a, t_list *b)
+void	set_move_costs(t_list *a, t_list *b)
 {
 	int		length_a;
 	int		length_b;
 	int		move_a;
 	int		move_b;
 
-	length_a = ft_stack_length(a);
-	length_b = ft_stack_length(b);
+	length_a = get_stack_length(a);
+	length_b = get_stack_length(b);
 	while (b)
 	{
 		move_a = b->target->cur_pos;
@@ -126,9 +126,9 @@ void	ft_set_move(t_list *a, t_list *b)
 			move_b = length_b - b->cur_pos;
 		b->move = move_a + move_b;
 		if (b->target->pre_mid && b->pre_mid)
-			b->move -= ft_mini(move_a, move_b);
+			b->move -= min(move_a, move_b);
 		else if (!b->target->pre_mid && !b->pre_mid)
-			b->move -= ft_mini(move_a, move_b);
+			b->move -= min(move_a, move_b);
 		b = b->next;
 	}
 }

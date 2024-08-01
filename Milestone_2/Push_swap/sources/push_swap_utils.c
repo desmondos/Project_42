@@ -6,13 +6,13 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 15:40:54 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/29 15:02:55 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/30 12:59:04 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
 
-int	ft_stack_length(t_list *a)
+int	get_stack_length(t_list *a)
 {
 	int	len;
 
@@ -27,68 +27,68 @@ int	ft_stack_length(t_list *a)
 	return (len);
 }
 
-t_list	*ft_is_higher(t_list *a)
+t_list	*find_highest_node(t_list *stack)
 {
-	long	higher;
-	t_list	*highest;
+	long	highest_value;
+	t_list	*highest_node;
 
-	if (a == NULL)
+	if (stack == NULL)
 		return (NULL);
-	higher = INT_MIN;
-	while (a)
+	highest_value = INT_MIN;
+	while (stack)
 	{
-		if (a->data > higher)
+		if (stack->data > highest_value)
 		{
-			higher = a->data;
-			highest = a;
+			highest_value = stack->data;
+			highest_node = stack;
+		}
+		stack = stack->next;
+	}
+	return (highest_node);
+}
+
+t_list	*find_min_node(t_list *stack)
+{
+	long	lowest_value;
+	t_list	*lowest_node;
+
+	if (stack == NULL)
+		return (NULL);
+	lowest_value = INT_MAX;
+	lowest_node = NULL;
+	while (stack)
+	{
+		if (stack->data < lowest_value)
+		{
+			lowest_value = stack->data;
+			lowest_node = stack;
 		}
 		else
-			a = a->next;
+			stack = stack->next;
 	}
-	return (highest);
+	return (lowest_node);
 }
 
-t_list	*find_min(t_list *a)
+int	is_lowest_value(t_list *stack)
 {
-	long	lower;
-	t_list	*lowest;
+	int	lowest_value;
 
-	if (a == NULL)
-		return (NULL);
-	lower = INT_MAX;
-	while (a)
+	lowest_value = stack->data;
+	while (stack)
 	{
-		if (a->data < lower)
-		{
-			lower = a->data;
-			lowest = a;
-		}
+		if (stack->data < lowest_value)
+			lowest_value = stack->data;
 		else
-			a = a->next;
+			stack = stack->next;
 	}
-	return (lowest);
+	return (lowest_value);
 }
 
-int	ft_is_lowest(t_list *a)
+t_list	*get_last_node(t_list *stack)
 {
-	int	pos;
-
-	pos = a->data;
-	while (a)
-	{
-		if (a->data < pos)
-			pos = a->data;
-		else
-			a = a->next;
-	}
-	return (pos);
-}
-
-t_list	*ft_lastlst(t_list *list)
-{
-	if (!list)
+	if (!stack)
 		return (NULL);
-	while (list && list->next)
-		list = list->next;
-	return (list);
+	while (stack && stack->next)
+		stack = stack->next;
+	return (stack);
 }

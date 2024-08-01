@@ -6,33 +6,38 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 07:56:00 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/29 16:33:24 by candriam         ###   ########.mg       */
+/*   Updated: 2024/08/01 15:27:53 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
+#include <stdio.h>
 
 int	main(int argc, char **argv)
 {
 	t_list	*a;
-	char	*after_split;
+	char	*merged_arg;
 
 	a = NULL;
-	after_split = NULL;
 	if (argc == 1 || (argc == 2 && !argv[1][0]))
 		return (1);
 	else if (argc == 2)
 		argv = ft_split(argv[1], 32);
 	else if (argc > 2)
 	{
-		after_split = arg_merge(argc, argv);
-		if (!after_split)
+		merged_arg = arg_merge(argc, argv);
+		if (!merged_arg)
 			return (1);
-		argv = ft_split(after_split, 32);
-		free(after_split);
+		argv = ft_split(merged_arg, 32);
+		free(merged_arg);
 	}
-	ft_init(&a, argv + 1);
+	if (initialize_stack(&a, argv + 1) == 1)
+	{
+		free_arg(argv);
+		free_stack(&a);
+		puterror_exit();
+	}
 	main_sort(a);
-	arg_free(argv);
+	free_arg(argv);
 	return (0);
 }

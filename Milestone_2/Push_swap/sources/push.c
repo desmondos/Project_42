@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_push.c                                          :+:      :+:    :+:   */
+/*   push.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 11:29:39 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/01 16:22:49 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/31 08:03:27 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	ft_push(t_list **source, t_list **target)
 	push_elem = *target;
 	*target = (*target)->next;
 	if (*target)
-		(*target)->prev = NULL;
-	push_elem->prev = NULL;
+		(*target)->back = NULL;
+	push_elem->back = NULL;
 	if (!*source)
 	{
 		*source = push_elem;
@@ -31,7 +31,7 @@ void	ft_push(t_list **source, t_list **target)
 	else
 	{
 		push_elem->next = *source;
-		push_elem->next->prev = push_elem;
+		push_elem->next->back = push_elem;
 		*source = push_elem;
 	}
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_swap.c                                          :+:      :+:    :+:   */
+/*   swap.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 09:56:15 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/01 16:24:07 by candriam         ###   ########.mg       */
+/*   Updated: 2024/07/31 08:02:29 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,16 @@ void	ft_swap(t_list **stack)
 {
 	int	len;
 
-	len = ft_stack_length(*stack);
+	len = get_stack_length(*stack);
 	if (stack == NULL || (*stack)->next == NULL || len == 1)
 		return ;
 	*stack = (*stack)->next;
-	(*stack)->prev->prev = *stack;
-	(*stack)->prev->next = (*stack)->next;
+	(*stack)->back->back = *stack;
+	(*stack)->back->next = (*stack)->next;
 	if ((*stack)->next)
-		(*stack)->next->prev = (*stack)->prev;
-	(*stack)->next = (*stack)->prev;
-	(*stack)->prev = NULL;
+		(*stack)->next->back = (*stack)->back;
+	(*stack)->next = (*stack)->back;
+	(*stack)->back = NULL;
 }
 
 void	ft_sa(t_list **a)

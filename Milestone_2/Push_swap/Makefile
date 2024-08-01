@@ -2,14 +2,15 @@ NAME = push_swap
 
 SRC_DIR = ./sources/
 
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/main_utils.c $(SRC_DIR)/ft_fill_stack.c $(SRC_DIR)/ft_manage_error.c \
-	   $(SRC_DIR)/ft_push.c $(SRC_DIR)/ft_push_swap.c $(SRC_DIR)/ft_reverse_rot.c \
-	   $(SRC_DIR)/ft_rotate.c $(SRC_DIR)/ft_sort.c $(SRC_DIR)/ft_sort_utils.c \
-	   $(SRC_DIR)/ft_swap.c $(SRC_DIR)/ft_utils.c $(SRC_DIR)/push_swap_utils.c \
+SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/main_utils.c $(SRC_DIR)/fill_stack.c \
+	   $(SRC_DIR)/manage_error.c $(SRC_DIR)/push.c $(SRC_DIR)/push_swap.c \
+	   $(SRC_DIR)/reverse_rot.c $(SRC_DIR)/rotate.c $(SRC_DIR)/sort.c \
+	   $(SRC_DIR)/sort_utils.c $(SRC_DIR)/swap.c $(SRC_DIR)/utils.c \
+	   $(SRC_DIR)/push_swap_utils.c \
 
 OBJS = ${SRCS:.c=.o}
 
-LIBFT_DIR = ./Libft/
+LIBFT_DIR = ./Libft
 
 LIBFT = ${LIBFT_DIR}/libft.a
 
