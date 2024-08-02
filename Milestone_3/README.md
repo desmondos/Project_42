@@ -57,5 +57,3 @@
 8. **Optimisation et Améliorations**
    - **Optimisation :** Améliorer les performances et la gestion de la mémoire si nécessaire.
    - **Extensions :** Ajouter des fonctionnalités supplémentaires comme la gestion des variables d'environnement, l’historique des commandes, ou le support des scripts.
-
-En suivant ces étapes et en développant ces compétences, tu pourras réussir l'implémentation complète de ton minishell. Bon courage avec ton projet !
