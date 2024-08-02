@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 09:40:44 by candriam          #+#    #+#             */
-/*   Updated: 2024/08/01 14:41:25 by candriam         ###   ########.mg       */
+/*   Updated: 2024/08/02 10:24:28 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ long	str_to_long(const char *nptr)
 	while (nptr[pos])
 	{
 		if (!(nptr[pos] >= 48 && nptr[pos] <= 57))
-			return (1);
-		data = data * 10 + (nptr[pos] - 48);
-		pos++;
+			return (2147483648);
+		else
+			data = data * 10 + (nptr[pos++] - 48);
 	}
 	return (is_neg * data);
 }

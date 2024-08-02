@@ -6,7 +6,7 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 09:40:36 by candriam          #+#    #+#             */
-/*   Updated: 2024/07/31 08:47:35 by candriam         ###   ########.mg       */
+/*   Updated: 2024/08/02 12:17:09 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@ t_list	*find_min_node(t_list *stack);
 t_list	*get_last_node(t_list *stack);
 
 int		initialize_stack(t_list **stack, char *argv[]);
+void	check_argument(int ac, char **av);
 void	append_to_stack(t_list **stack, int input);
 void	initialize_nodes(t_list *a, t_list *b);
 void	free_stack(t_list **stack);
+void	free_puterror_exit(t_list **stack, char **argv);
 void	puterror_exit(void);
 void	ft_push(t_list **source, t_list **target);
 void	ft_pa(t_list **a, t_list **b);

@@ -6,11 +6,19 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 06:49:06 by candriam          #+#    #+#             */
-/*   Updated: 2024/08/01 16:03:34 by candriam         ###   ########.mg       */
+/*   Updated: 2024/08/02 10:17:26 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
+
+void	free_puterror_exit(t_list **stack, char **argv)
+{
+	free_arg(argv);
+	free_stack(stack);
+	write(2, "Error\n", 6);
+	exit(1);
+}
 
 void	puterror_exit(void)
 {

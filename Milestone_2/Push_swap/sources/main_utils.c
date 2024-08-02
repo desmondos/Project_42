@@ -6,12 +6,11 @@
 /*   By: candriam <candriam@student.42antananarivo  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 07:56:00 by candriam          #+#    #+#             */
-/*   Updated: 2024/08/01 16:03:31 by candriam         ###   ########.mg       */
+/*   Updated: 2024/08/02 10:41:26 by candriam         ###   ########.mg       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/push_swap.h"
-#include <stdio.h>
 
 int	calculate_len(int ac, char **av)
 {
@@ -93,7 +92,7 @@ void	main_sort(t_list *a)
 	t_list	*b;
 
 	b = NULL;
-	if (!is_sorted(a))
+	if (is_sorted(a) == false)
 	{
 		if (get_stack_length(a) == 2)
 			ft_sa(&a);
