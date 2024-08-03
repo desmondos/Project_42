@@ -22,7 +22,7 @@ INCS = ../includes/includes\libft.h
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror 
 
 LIBC = ar -rcs
 
